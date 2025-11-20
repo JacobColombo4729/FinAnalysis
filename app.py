@@ -13,7 +13,7 @@ from typing import Optional
 import chainlit as cl
 import chromadb
 from dotenv import load_dotenv
-from langchain.memory import ConversationBufferWindowMemory
+from langchain_community.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
 from sentence_transformers import SentenceTransformer
 
@@ -93,8 +93,10 @@ async def start_chat():
     model = SentenceTransformer("all-MiniLM-L6-v2")
     
     # Initialize ChromaDB client for persistent vector storage
+    # Use CHROMA_DB_PATH env var if set (for persistent volumes in deployment), otherwise use ./chroma_db
+    chroma_db_path = os.getenv("CHROMA_DB_PATH", "./chroma_db")
     try:
-        chroma_client = chromadb.PersistentClient(path="./chroma_db")
+        chroma_client = chromadb.PersistentClient(path=chroma_db_path)
         
         # Get or create ChromaDB collection for financial analysis texts
         financial_collection = chroma_client.get_or_create_collection(

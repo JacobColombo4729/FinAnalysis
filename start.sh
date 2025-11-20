@@ -4,16 +4,23 @@
 
 echo "Starting Financial Analysis Application..."
 
+# Use CHROMA_DB_PATH env var if set (for persistent volumes), otherwise use ./chroma_db
+CHROMA_DB_PATH=${CHROMA_DB_PATH:-./chroma_db}
+export CHROMA_DB_PATH
+
+# Ensure the directory exists
+mkdir -p "${CHROMA_DB_PATH}"
+
 # Check if chroma_db exists and has data
-if [ ! -d "chroma_db" ] || [ -z "$(ls -A chroma_db 2>/dev/null)" ]; then
-    echo "ChromaDB not found or empty. Will build knowledge base in background..."
+if [ ! -d "${CHROMA_DB_PATH}" ] || [ -z "$(ls -A "${CHROMA_DB_PATH}" 2>/dev/null)" ]; then
+    echo "ChromaDB not found or empty at ${CHROMA_DB_PATH}. Will build knowledge base in background..."
     echo "App will start immediately. Knowledge base will be available once built."
     # Build knowledge base in background (non-blocking)
     nohup python utils/embeddings.py > /tmp/kb_build.log 2>&1 &
     KB_BUILD_PID=$!
     echo "Knowledge base build started in background (PID: $KB_BUILD_PID)"
 else
-    echo "ChromaDB found. Skipping knowledge base build."
+    echo "ChromaDB found at ${CHROMA_DB_PATH}. Skipping knowledge base build."
 fi
 
 # Start the application immediately (don't wait for knowledge base)

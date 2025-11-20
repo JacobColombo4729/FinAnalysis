@@ -518,11 +518,13 @@ if __name__ == "__main__":
     print("Financial Analysis Texts Ingestion")
     print("=" * 60)
     print(f"Data Directory: {financial_texts_dir}")
-    print("ChromaDB Path: ./chroma_db")
+    # Use CHROMA_DB_PATH env var if set (for persistent volumes in deployment), otherwise use ./chroma_db
+    chroma_db_path = os.getenv("CHROMA_DB_PATH", "./chroma_db")
+    print(f"ChromaDB Path: {chroma_db_path}")
     print("=" * 60)
     
     # Initialize ChromaDB client
-    client = chromadb.PersistentClient(path="./chroma_db")
+    client = chromadb.PersistentClient(path=chroma_db_path)
     
     # Get or create the financial analysis texts collection
     financial_collection = client.get_or_create_collection(
