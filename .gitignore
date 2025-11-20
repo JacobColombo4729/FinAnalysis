@@ -15,6 +15,7 @@ ENV/
 
 # ChromaDB
 chroma_db/
+chroma_db_backup/
 
 # Temporary chart files
 temp_charts/
