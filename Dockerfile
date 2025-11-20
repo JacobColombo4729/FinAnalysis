@@ -25,12 +25,14 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p chroma_db temp_charts
 
-# Expose Chainlit port
+# Expose Chainlit port (Render will set PORT env var)
 EXPOSE 8000
 
 # Set environment variables
 ENV CHAINLIT_HOST=0.0.0.0
 ENV PORT=8000
+# Ensure Chainlit listens on all interfaces
+ENV CHAINLIT_HOST=0.0.0.0
 
 # Copy startup script
 COPY start.sh .
