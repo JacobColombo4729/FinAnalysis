@@ -535,11 +535,18 @@ if __name__ == "__main__":
     print(f"\nCurrent collection size: {current_count} document chunks")
     
     # Ask user if they want to re-ingest
+    # In non-interactive environments (like deployment), auto-reingest if needed
     if current_count > 0:
-        response = input(f"\nCollection already has {current_count} chunks. Re-ingest? (y/N): ")
-        if response.lower() != 'y':
-            print("Skipping ingestion. Exiting.")
-            exit(0)
+        # Check if running in non-interactive mode (no TTY)
+        import sys
+        if sys.stdin.isatty():
+            response = input(f"\nCollection already has {current_count} chunks. Re-ingest? (y/N): ")
+            if response.lower() != 'y':
+                print("Skipping ingestion. Exiting.")
+                exit(0)
+        else:
+            # Non-interactive: auto-reingest in deployment
+            print(f"Non-interactive mode: Auto-reingesting {current_count} existing chunks...")
         force_reingest = True
     else:
         force_reingest = False
