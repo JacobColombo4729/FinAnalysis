@@ -29,10 +29,9 @@ RUN mkdir -p chroma_db temp_charts
 EXPOSE 8000
 
 # Set environment variables
+# Render will override PORT, but we set defaults
 ENV CHAINLIT_HOST=0.0.0.0
 ENV PORT=8000
-# Ensure Chainlit listens on all interfaces
-ENV CHAINLIT_HOST=0.0.0.0
 
 # Copy startup script
 COPY start.sh .
