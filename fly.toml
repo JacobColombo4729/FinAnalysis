@@ -7,10 +7,21 @@ primary_region = "iad"
 
 [env]
   PORT = "8000"
+  CHAINLIT_HOST = "0.0.0.0"
+
+[compute]
+  memory_mb = 2048
+  cpu_kind = "shared"
+  cpus = 2
 
 [[services]]
   internal_port = 8000
   protocol = "tcp"
+  
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
 
   [[services.ports]]
     handlers = ["http"]
@@ -20,15 +31,10 @@ primary_region = "iad"
     handlers = ["tls", "http"]
     port = 443
 
-  [services.concurrency]
-    type = "connections"
-    hard_limit = 25
-    soft_limit = 20
-
   [[services.http_checks]]
     interval = "10s"
-    timeout = "2s"
-    grace_period = "5s"
+    timeout = "5s"
+    grace_period = "10s"
     method = "GET"
     path = "/"
 

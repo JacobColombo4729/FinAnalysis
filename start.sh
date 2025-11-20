@@ -18,5 +18,6 @@ fi
 
 # Start the application
 echo "Starting Chainlit application..."
-exec chainlit run app.py --port ${PORT:-8000} --host 0.0.0.0
+# Use PORT from environment (Fly.io provides this)
+exec chainlit run app.py --port ${PORT:-8000} --host ${CHAINLIT_HOST:-0.0.0.0}
 
