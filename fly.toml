@@ -32,9 +32,9 @@ primary_region = "iad"
     port = 443
 
   [[services.http_checks]]
-    interval = "10s"
-    timeout = "5s"
-    grace_period = "10s"
+    interval = "30s"
+    timeout = "10s"
+    grace_period = "60s"
     method = "GET"
     path = "/"
 
