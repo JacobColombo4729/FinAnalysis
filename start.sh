@@ -23,5 +23,14 @@ echo "Starting Chainlit application..."
 PORT=${PORT:-8000}
 CHAINLIT_HOST=${CHAINLIT_HOST:-0.0.0.0}
 echo "Binding to ${CHAINLIT_HOST}:${PORT}"
-exec chainlit run app.py --port ${PORT} --host ${CHAINLIT_HOST}
+echo "PORT environment variable: ${PORT}"
+echo "CHAINLIT_HOST environment variable: ${CHAINLIT_HOST}"
+
+# Export PORT so Chainlit can read it
+export PORT
+export CHAINLIT_HOST
+
+# Start Chainlit with explicit port and host binding
+# Use --no-open to prevent opening browser, and ensure it binds properly
+exec chainlit run app.py --port ${PORT} --host ${CHAINLIT_HOST} --no-open
 
