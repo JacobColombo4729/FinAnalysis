@@ -55,9 +55,14 @@ Run the Chainlit application:
 chainlit run app.py
 ```
 
+Or if you need to specify a host and port:
+```bash
+chainlit run app.py --host 0.0.0.0 --port 8000
+```
+
 **Note:** Make sure you've run the ingestion script first (see step 4 above), otherwise the chatbot will warn you that the knowledge base is empty.
 
-The application will open in your browser automatically.
+The application will open in your browser automatically at `http://localhost:8000`.
 
 ### Using the Application
 
