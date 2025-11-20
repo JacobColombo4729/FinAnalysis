@@ -35,24 +35,6 @@ class FinancialAnalysisAgent:
     _tickers_cache_time = None
     CACHE_DURATION = 24 * 60 * 60  # 24 hours in seconds
     
-    # Mapping of filenames to MLA citations
-    SOURCE_CITATIONS = {
-        "CorporateFinance.pdf": "Berk, Jonathan, and Peter DeMarzo. Corporate Finance. Pearson, 2020.",
-        "CorporateFinanceforDummies.pdf": "Taillard, Michael. Corporate Finance For Dummies. For Dummies, 2012.",
-        "CorporateFinancialAnalysiswithMicrosoftExcel.pdf": "Fairhurst, Danielle Stein. Corporate Financial Analysis with Microsoft Excel. Wiley, 2015.",
-        "Financial Intelligence.pdf": "Berman, Karen, and Joe Knight. Financial Intelligence: A Manager's Guide to Knowing What the Numbers Really Mean. Harvard Business Review Press, 2013.",
-        "Financial Planning & Analysis and Performance Management ( PDFDrive ).pdf": "Nayar, Jack. Financial Planning & Analysis and Performance Management. Wiley, 2018.",
-        "Financial-Shenanigans-How-to-Detect-Accounting-Gimmicks-and-Fraud-in-Financial-Reports-Fourth-Edition-pages-1-160.pdf": "Schilit, Howard, Jeremy Perler, and Yoni Engelhart. Financial Shenanigans: How to Detect Accounting Gimmicks and Fraud in Financial Reports. 4th ed., McGraw-Hill Education, 2018.",
-        "financial-statement-analysis-lifa.pdf": "Robinson, Thomas R., et al. International Financial Statement Analysis. 3rd ed., CFA Institute, 2015.",
-        "FinancialIntelligenceRevisedEdition.pdf": "Berman, Karen, and Joe Knight. Financial Intelligence: A Manager's Guide to Knowing What the Numbers Really Mean. Revised ed., Harvard Business Review Press, 2013.",
-        "FinancialModeling.pdf": "Benninga, Simon. Financial Modeling. 4th ed., MIT Press, 2014.",
-        "FinancialModelinginExcelforDummies.pdf": "Fairhurst, Danielle Stein. Financial Modeling in Excel For Dummies. For Dummies, 2017.",
-        "International-financial-statement-analysis-CFA-Institute.pdf": "Robinson, Thomas R., et al. International Financial Statement Analysis. 3rd ed., CFA Institute, 2015.",
-        "ReadingFinancialReportsforDummies.pdf": "Epstein, Lita. Reading Financial Reports For Dummies. 3rd ed., For Dummies, 2013.",
-        "The Intelligent Investor - BENJAMIN GRAHAM.pdf": "Graham, Benjamin. The Intelligent Investor: The Definitive Book on Value Investing. Revised ed., HarperBusiness, 2006.",
-        "Warren-Buffett-and-the-Interpretation-of-Financial-Statements.pdf": "Buffett, Mary, and David Clark. Warren Buffett and the Interpretation of Financial Statements: The Search for the Company with a Durable Competitive Advantage. Scribner, 2008."
-    }
-    
     def __init__(
         self,
         model: SentenceTransformer,
@@ -67,52 +49,29 @@ class FinancialAnalysisAgent:
         self.financial_collection = financial_collection
         self.progress_callback = progress_callback  # Callback for sending progress updates
     
-    def _get_rag_context(self, query: str, k: int = 5) -> tuple:
+    def _get_rag_context(self, query: str, k: int = 5) -> str:
         """Retrieve relevant context from the financial analysis knowledge base.
         
         Returns:
-            tuple: (formatted_context_string, sources_list)
+            str: Formatted context string
         """
         if self.financial_collection is None:
-            return ("", [])  # No RAG context available if collection is not initialized
+            return ""  # No RAG context available if collection is not initialized
         
         try:
             chunks = retrieve_relevant_chunks(query, self.financial_collection, k=k, include_metadata=True)
             if not chunks:
-                return ("", [])
+                return ""
             
             context_parts = []
-            sources = []
-            seen_sources = {}  # Track unique sources to avoid duplicates
-            source_counter = 1
-            
             for chunk, chunk_id, metadata, distance in chunks:
-                source_filename = metadata.get('source', 'Unknown')
-                
-                # Get MLA citation for this source
-                if source_filename in self.SOURCE_CITATIONS:
-                    mla_citation = self.SOURCE_CITATIONS[source_filename]
-                else:
-                    # Fallback: format filename nicely if not in mapping
-                    source_clean = source_filename.replace('.pdf', '').replace('_', ' ').title()
-                    mla_citation = f"{source_clean}. PDF."
-                
-                # Use source number if we've seen this source before, otherwise assign new number
-                if source_filename not in seen_sources:
-                    seen_sources[source_filename] = source_counter
-                    sources.append(mla_citation)
-                    source_num = source_counter
-                    source_counter += 1
-                else:
-                    source_num = seen_sources[source_filename]
-                
-                context_parts.append(f"[Source {source_num}] {mla_citation}\n{chunk}\n")
+                context_parts.append(chunk)
             
             formatted_context = "\n---\n".join(context_parts)
-            return (formatted_context, sources)
+            return formatted_context
         except Exception as e:
             print(f"Error retrieving RAG context: {e}")
-            return ("", [])
+            return ""
     
     def _send_progress(self, message: str):
         """Send progress update if callback is available."""
@@ -151,7 +110,7 @@ class FinancialAnalysisAgent:
             analysis_query += f"profit margin {stock_info.get('profit_margin')}, "
             analysis_query += f"ROE {stock_info.get('roe')}, debt to equity {stock_info.get('debt_to_equity')}"
             
-            rag_context, rag_sources = self._get_rag_context(analysis_query, k=5)
+            rag_context = self._get_rag_context(analysis_query, k=5)
             
             # Create visualizations
             self._send_progress(f"Creating charts and visualizations...")
@@ -173,7 +132,7 @@ class FinancialAnalysisAgent:
             analysis_text = self.llm.invoke(analysis_prompt).content
             
             # Build complete report
-            report = self._build_report(ticker, stock_info, financial_statements, analyst_data, analysis_text, rag_sources)
+            report = self._build_report(ticker, stock_info, financial_statements, analyst_data, analysis_text)
             
             # Prepare visualizations with file paths
             visualization_files = self._prepare_visualizations(
@@ -193,7 +152,7 @@ class FinancialAnalysisAgent:
             raise Exception(f"Error analyzing stock {ticker}: {str(e)}")
     
     def _build_report(self, ticker: str, stock_info: Dict, financial_statements: Dict, 
-                     analyst_data: Dict, analysis_text: str, sources: list = None) -> str:
+                     analyst_data: Dict, analysis_text: str) -> str:
         """Build the complete formatted report with all tables and analysis."""
         report_parts = []
         
@@ -316,14 +275,6 @@ class FinancialAnalysisAgent:
         report_parts.append(analysis_text)
         report_parts.append("\n")
         
-        # Citations
-        if sources:
-            report_parts.append("## Works Cited\n")
-            for source in sources:
-                # Sources are already in MLA format from SOURCE_CITATIONS
-                report_parts.append(f"{source}\n")
-            report_parts.append("\n")
-        
         return "\n".join(report_parts)
     
     def _prepare_visualizations(self, ticker: str, price_chart: str, metrics_chart: str, 
@@ -431,7 +382,7 @@ Based on the above information and financial analysis principles from the knowle
 5. Risk Factors
 6. Investment Recommendation (Buy/Hold/Sell) with reasoning
 
-IMPORTANT: When referencing information from the knowledge base sources, cite them using in-text citations in the format (Source 1), (Source 2), etc., corresponding to the source numbers provided in the context above. Be specific, use the metrics provided, and reference financial analysis principles where relevant. Format the response in clear sections with headers.
+Be specific, use the metrics provided, and reference financial analysis principles where relevant. Format the response in clear sections with headers.
 """
         return prompt
     
@@ -447,7 +398,7 @@ IMPORTANT: When referencing information from the knowledge base sources, cite th
             str: Answer to the question
         """
         # Get RAG context
-        rag_context, rag_sources = self._get_rag_context(question, k=5)
+        rag_context = self._get_rag_context(question, k=5)
         
         # If ticker is provided, get stock data
         stock_context = ""
@@ -470,18 +421,11 @@ FINANCIAL ANALYSIS KNOWLEDGE BASE:
 {rag_context if rag_context else "No specific context available from the knowledge base."}
 {stock_context}
 
-Provide a clear, accurate, and comprehensive answer based on the knowledge base. When referencing information from the knowledge base sources, cite them using in-text citations in the format (Source 1), (Source 2), etc., corresponding to the source numbers provided in the context above. If the knowledge base provides relevant information, use it to give a detailed explanation with proper citations. If the knowledge base doesn't contain specific information about this topic, you may use your general knowledge of financial analysis to provide a helpful answer, but mention that the information may not be from the knowledge base. If real-time stock data is provided, you may reference it in your answer.
+Provide a clear, accurate, and comprehensive answer based on the knowledge base. If the knowledge base provides relevant information, use it to give a detailed explanation. If the knowledge base doesn't contain specific information about this topic, you may use your general knowledge of financial analysis to provide a helpful answer. If real-time stock data is provided, you may reference it in your answer.
 """
         
         response = self.llm.invoke(prompt)
         answer = response.content
-        
-        # Append formal references if sources were used (only if not already present)
-        if rag_sources and "## Works Cited" not in answer and "Works Cited" not in answer:
-            answer += "\n\n## Works Cited\n"
-            for source in rag_sources:
-                # Sources are already in MLA format from SOURCE_CITATIONS
-                answer += f"{source}\n"
         
         return answer
     
@@ -564,7 +508,7 @@ Provide a clear, accurate, and comprehensive answer based on the knowledge base.
             rag_query = f"What are the best fundamental metrics for stock analysis? {query}"
             if is_future_query:
                 rag_query += f" How to evaluate stocks for future investment in {target_year}?"
-            rag_context, rag_sources = self._get_rag_context(rag_query, k=5)
+            rag_context = self._get_rag_context(rag_query, k=5)
             
             # Create detailed stocks summary with forward-looking metrics
             stocks_summary = "\n".join([
@@ -610,7 +554,6 @@ For queries about "best fundamentals" or "stocks to watch", prioritize:
 
 {"For future-year queries (like 2026), emphasize forward-looking metrics and growth potential." if is_future_query else ""}
 
-IMPORTANT: When referencing information from the knowledge base sources, cite them using in-text citations in the format (Source 1), (Source 2), etc., corresponding to the source numbers provided in the context above.
 
 Provide:
 1. Top 5-10 stocks that best match the criteria (ranked)
@@ -625,13 +568,6 @@ Format the response clearly with rankings, use markdown tables where helpful, an
             
             response = self.llm.invoke(prompt)
             answer = response.content
-            
-            # Append formal references if sources were used (only if not already present)
-            if rag_sources and "## Works Cited" not in answer and "Works Cited" not in answer:
-                answer += "\n\n## Works Cited\n"
-                for source in rag_sources:
-                    # Sources are already in MLA format from SOURCE_CITATIONS
-                    answer += f"{source}\n"
             
             return answer
             
