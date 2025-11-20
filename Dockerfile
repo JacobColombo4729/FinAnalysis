@@ -9,11 +9,15 @@ RUN apt-get update && apt-get install -y \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
+# Upgrade pip for better performance
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
 # Copy requirements first for better caching
 COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+# Using --timeout to prevent hanging, and installing in one go for better caching
+RUN pip install --no-cache-dir --timeout=300 -r requirements.txt
 
 # Copy application code
 COPY . .
