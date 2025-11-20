@@ -537,9 +537,9 @@ if __name__ == "__main__":
     # Ask user if they want to re-ingest
     if current_count > 0:
         response = input(f"\nCollection already has {current_count} chunks. Re-ingest? (y/N): ")
-    if response.lower() != 'y':
-        print("Skipping ingestion. Exiting.")
-        exit(0)
+        if response.lower() != 'y':
+            print("Skipping ingestion. Exiting.")
+            exit(0)
         force_reingest = True
     else:
         force_reingest = False
