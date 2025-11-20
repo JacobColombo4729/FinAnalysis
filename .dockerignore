@@ -17,5 +17,9 @@ chroma_db_backup/
 .git/
 .gitignore
 README.md
-DEPLOYMENT.md
+.files/
+temp_charts/
+*.png
+*.jpg
+*.jpeg
 
