@@ -1,0 +1,17 @@
+/* Hide Chainlit logo */
+.logo,
+.app-logo,
+[class*="logo"],
+[data-testid*="logo"],
+img[alt*="logo"],
+img[alt*="Logo"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide logo container if it exists */
+.logo-container,
+.logo-wrapper {
+    display: none !important;
+}
+

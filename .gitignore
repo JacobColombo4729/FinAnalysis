@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Environment variables
+.env
+.env.local
+
+# ChromaDB
+chroma_db/
+
+# Temporary chart files
+temp_charts/
+*.png
+*.jpg
+*.jpeg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Deployment
+.env.production
+.env.staging
+
+# Large data files (if not using persistent storage)
+# Uncomment if you want to exclude PDFs from git
+# data/FinAnalysisTexts/*.pdf
+

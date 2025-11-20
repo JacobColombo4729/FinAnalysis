@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: finanalysis
+    env: docker
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+    healthCheckPath: /
+    plan: starter
+
