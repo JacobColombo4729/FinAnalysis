@@ -32,5 +32,6 @@ export CHAINLIT_HOST
 
 # Start Chainlit with explicit port and host binding
 # Use --no-open to prevent opening browser, and ensure it binds properly
-exec chainlit run app.py --port ${PORT} --host ${CHAINLIT_HOST} --no-open
+# Chainlit should bind to 0.0.0.0 to be accessible from outside the container
+chainlit run app.py --port ${PORT} --host ${CHAINLIT_HOST} --no-open
 
