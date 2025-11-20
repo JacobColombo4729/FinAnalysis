@@ -532,19 +532,19 @@ if __name__ == "__main__":
     
     # Check current count
     current_count = financial_collection.count()
-        print(f"\nCurrent collection size: {current_count} document chunks")
-        
-        # Ask user if they want to re-ingest
-        if current_count > 0:
-            response = input(f"\nCollection already has {current_count} chunks. Re-ingest? (y/N): ")
-        if response.lower() != 'y':
-            print("Skipping ingestion. Exiting.")
-            exit(0)
+    print(f"\nCurrent collection size: {current_count} document chunks")
+    
+    # Ask user if they want to re-ingest
+    if current_count > 0:
+        response = input(f"\nCollection already has {current_count} chunks. Re-ingest? (y/N): ")
+    if response.lower() != 'y':
+        print("Skipping ingestion. Exiting.")
+        exit(0)
         force_reingest = True
     else:
         force_reingest = False
     
-        print(f"\nProcessing files from: {financial_texts_dir}")
+    print(f"\nProcessing files from: {financial_texts_dir}")
     print("This may take several minutes depending on the number of PDFs...\n")
     
     try:
