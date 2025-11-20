@@ -967,7 +967,7 @@ Format the response clearly with rankings, use markdown tables where helpful, an
             sp500_tickers = self._get_tickers_from_sp500()
             if sp500_tickers:
                 all_tickers.extend(sp500_tickers)
-                print(f"✅ Fetched {len(sp500_tickers)} S&P 500 tickers")
+                print(f"Fetched {len(sp500_tickers)} S&P 500 tickers")
         except Exception as e:
             print(f"Warning: Could not fetch S&P 500 tickers: {e}")
         
@@ -976,7 +976,7 @@ Format the response clearly with rankings, use markdown tables where helpful, an
             nasdaq_tickers = self._get_tickers_from_nasdaq100()
             if nasdaq_tickers:
                 all_tickers.extend(nasdaq_tickers)
-                print(f"✅ Fetched {len(nasdaq_tickers)} NASDAQ 100 tickers")
+                print(f"Fetched {len(nasdaq_tickers)} NASDAQ 100 tickers")
         except Exception as e:
             print(f"Warning: Could not fetch NASDAQ 100 tickers: {e}")
         
@@ -989,7 +989,7 @@ Format the response clearly with rankings, use markdown tables where helpful, an
                 seen.add(ticker_upper)
                 unique_tickers.append(ticker_upper)
         
-        print(f"✅ Total unique tickers: {len(unique_tickers)}")
+        print(f"Total unique tickers: {len(unique_tickers)}")
         
         # Update cache
         FinancialAnalysisAgent._tickers_cache = unique_tickers

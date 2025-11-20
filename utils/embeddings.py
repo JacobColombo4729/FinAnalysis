@@ -349,7 +349,7 @@ def embed_json_file(filepath, collection, force_reingest=False):
             total_added += len(batch_docs)
             print(f"Added batch {i//chroma_batch_size + 1}: {len(batch_docs)} chunks (total: {total_added}/{len(docs)})")
         
-        print(f"✅ Successfully added {len(docs)} chunks to collection '{collection.name}'")
+        print(f"Successfully added {len(docs)} chunks to collection '{collection.name}'")
     except Exception as e:
         print(f"Error adding documents to collection: {e}")
         raise
@@ -510,7 +510,7 @@ if __name__ == "__main__":
     
     # Check if directory exists
     if not os.path.isdir(financial_texts_dir):
-        print(f"❌ Error: Directory not found: {financial_texts_dir}")
+        print(f"Error: Directory not found: {financial_texts_dir}")
         print("Please ensure the 'data/FinAnalysisTexts' directory exists.")
         exit(1)
 
@@ -532,11 +532,11 @@ if __name__ == "__main__":
     
     # Check current count
     current_count = financial_collection.count()
-    print(f"\n📊 Current collection size: {current_count} document chunks")
-    
-    # Ask user if they want to re-ingest
-    if current_count > 0:
-        response = input(f"\n⚠️  Collection already has {current_count} chunks. Re-ingest? (y/N): ")
+        print(f"\nCurrent collection size: {current_count} document chunks")
+        
+        # Ask user if they want to re-ingest
+        if current_count > 0:
+            response = input(f"\nCollection already has {current_count} chunks. Re-ingest? (y/N): ")
         if response.lower() != 'y':
             print("Skipping ingestion. Exiting.")
             exit(0)
@@ -544,7 +544,7 @@ if __name__ == "__main__":
     else:
         force_reingest = False
     
-    print(f"\n📚 Processing files from: {financial_texts_dir}")
+        print(f"\nProcessing files from: {financial_texts_dir}")
     print("This may take several minutes depending on the number of PDFs...\n")
     
     try:
@@ -554,11 +554,11 @@ if __name__ == "__main__":
         # Show final count
         final_count = financial_collection.count()
         print("\n" + "=" * 60)
-        print(f"✅ Ingestion Complete!")
-        print(f"📊 Total document chunks in collection: {final_count}")
+        print(f"Ingestion Complete!")
+        print(f"Total document chunks in collection: {final_count}")
         print("=" * 60)
         print("\nYou can now start the chatbot with: chainlit run app.py")
         
     except Exception as e:
-        print(f"\n❌ Error during ingestion: {e}")
+        print(f"\nError during ingestion: {e}")
         raise

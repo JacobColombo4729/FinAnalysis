@@ -4,8 +4,8 @@ A comprehensive stock analysis application that combines Retrieval-Augmented Gen
 
 ## Features
 
-- 📚 **RAG-Powered Analysis**: Uses embeddings from financial analysis textbooks in `data/FinAnalysisTexts/` to provide context-aware analysis
-- 📊 **Real-Time Stock Data**: Fetches current financial data from Yahoo Finance
+- **RAG-Powered Analysis**: Uses embeddings from financial analysis textbooks in `data/FinAnalysisTexts/` to provide context-aware analysis
+- **Real-Time Stock Data**: Fetches current financial data from Yahoo Finance
 - 📈 **Visualizations**: Generates charts for price history, valuation metrics, and profitability analysis
 - 📋 **Comprehensive Reports**: Creates detailed reports with tables showing:
   - Key financial metrics (PE ratio, market cap, etc.)
@@ -13,7 +13,7 @@ A comprehensive stock analysis application that combines Retrieval-Augmented Gen
   - Financial health metrics (current ratio, debt-to-equity, etc.)
   - Analyst estimates and recommendations
   - Financial statements (income statement, balance sheet, cash flow)
-- 🤖 **AI-Powered Insights**: Uses LLM to generate investment analysis based on financial principles
+- **AI-Powered Insights**: Uses LLM to generate investment analysis based on financial principles
 
 ## Setup
 
@@ -118,15 +118,34 @@ This tool provides educational and informational analysis only. It is not financ
 
 ## Deployment
 
-For beta testing and production deployment, see [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
+### Quick Deploy with Fly.io
 
-**Quick Deploy Options:**
-- **Railway**: Easiest option, free tier available
-- **Render**: Free tier with automatic deployments
-- **Fly.io**: Global deployment, good free tier
-- **Docker**: Works on any cloud platform
+1. **Install Fly CLI**:
+   ```bash
+   curl -L https://fly.io/install.sh | sh
+   fly auth login
+   ```
 
-See DEPLOYMENT.md for step-by-step guides.
+2. **Set API Key**:
+   ```bash
+   fly secrets set GROQ_API_KEY=your_groq_api_key_here
+   ```
+
+3. **Deploy**:
+   ```bash
+   fly deploy
+   ```
+
+4. **Open App**:
+   ```bash
+   fly open
+   ```
+
+### Other Deployment Options
+
+- **Railway**: Connect GitHub repo, add `GROQ_API_KEY`, deploy
+- **Render**: Connect GitHub repo, use Dockerfile, add environment variables
+- **Docker**: Build with `docker build -t finanalysis .` and run with `docker run -p 8000:8000 --env-file .env finanalysis`
 
 ## License
 
