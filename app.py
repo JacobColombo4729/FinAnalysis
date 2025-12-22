@@ -4,7 +4,7 @@ Financial Analysis RAG Application
 This application provides comprehensive stock analysis using:
 - RAG (Retrieval-Augmented Generation) from financial analysis textbooks
 - Real-time stock data from Yahoo Finance
-- Visualizations and tables for financial reports
+- Tables for financial reports
 """
 import os
 import re
@@ -194,11 +194,10 @@ async def start_chat():
             "I'm your AI financial analyst powered by:\n"
             "- **RAG (Retrieval-Augmented Generation)** from financial analysis textbooks\n"
             "- **Real-time stock data** from Yahoo Finance\n"
-            "- **Comprehensive visualizations** and analysis reports\n\n"
+            "- **Comprehensive analysis reports**\n\n"
             
             "#### How to Use\n"
             "Simply enter a stock ticker symbol (e.g., **AAPL**, **MSFT**, **TSLA**) and I'll generate a comprehensive analysis report including:\n\n"
-            "- **Stock Price Charts** - Historical price and volume data\n"
             "- **Financial Metrics** - PE ratio, valuation metrics, profitability ratios\n"
             "- **Financial Statements** - Income statement, balance sheet, cash flow\n"
             "- **Analysis Tables** - Key metrics in organized tables\n"
@@ -228,7 +227,7 @@ async def handle_message(message: cl.Message):
     This function:
     1. Extracts ticker symbols from user messages
     2. Routes to financial analysis agent
-    3. Generates comprehensive reports with tables and visualizations
+    3. Generates comprehensive reports with tables
     4. Answers general financial questions using RAG
     """
     user_input = message.content.strip()
@@ -275,27 +274,11 @@ async def handle_message(message: cl.Message):
             await cl.Message(content=f"**Starting comprehensive analysis of {ticker}...**\n\nGathering all the data needed for your report.").send()
             
             try:
-                # Agent handles all data fetching, report building, and visualization preparation
+                # Agent handles all data fetching and report building
                 analysis = financial_agent.analyze_stock(ticker)
                 
                 # Send the complete report (only once)
                 await cl.Message(content=analysis['report']).send()
-                
-                # Send visualizations
-                for chart_key, chart_info in analysis['visualization_files'].items():
-                    try:
-                        await cl.Message(
-                            content=chart_info['title'],
-                            elements=[
-                                cl.Image(
-                                    name=chart_key,
-                                    path=chart_info['path'],
-                                    display="inline"
-                                )
-                            ]
-                        ).send()
-                    except Exception as e:
-                        print(f"Error displaying {chart_key}: {e}")
                 
             except Exception as e:
                 await cl.Message(
