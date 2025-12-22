@@ -13,7 +13,7 @@ from typing import Optional
 import chainlit as cl
 import chromadb
 from dotenv import load_dotenv
-from langchain_community.memory import ConversationBufferWindowMemory
+from langchain.memory import ConversationBufferWindowMemory
 from langchain_groq import ChatGroq
 from sentence_transformers import SentenceTransformer
 
