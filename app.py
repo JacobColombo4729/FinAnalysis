@@ -192,7 +192,8 @@ async def start_chat():
         content=(
             "### Welcome to Financial Analysis\n\n"
             "I'm your AI financial analyst powered by:\n"
-            "- **RAG (Retrieval-Augmented Generation)** from financial analysis textbooks\n"
+            "- **RAG (Retrieval-Augmented Generation)** from the following financial analysis textbooks:\n"
+
             "- **Real-time stock data** from Yahoo Finance\n"
             "- **Comprehensive analysis reports**\n\n"
             

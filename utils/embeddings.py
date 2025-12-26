@@ -39,6 +39,51 @@ def get_files(path, exts=('.txt', '.html', '.pdf', '.json')):
         special_files += glob.glob(f"{path}/**/*{ext}", recursive=True)
     return special_files
 
+def json_to_text_lines(data, prefix=""):
+    """
+    Converts JSON data structure into a list of readable text lines.
+    
+    Handles nested dictionaries, lists, and various data types in a way that
+    preserves semantic meaning for embedding and retrieval.
+    
+    Args:
+        data: The JSON data (dict, list, or primitive type)
+        prefix (str): Prefix for nested structures (used recursively)
+    
+    Returns:
+        list: A list of text lines representing the JSON data
+    """
+    lines = []
+    
+    if isinstance(data, dict):
+        for key, value in data.items():
+            current_key = f"{prefix}.{key}" if prefix else key
+            
+            if isinstance(value, (dict, list)):
+                # For nested structures, add a header line and recurse
+                lines.append(f"{current_key}:")
+                lines.extend(json_to_text_lines(value, current_key))
+            else:
+                # For primitive values, create a readable line with proper formatting
+                formatted_value = str(value)
+                lines.append(f"{current_key}: {formatted_value}")
+    
+    elif isinstance(data, list):
+        for i, item in enumerate(data):
+            current_key = f"{prefix}[{i}]" if prefix else f"[{i}]"
+            
+            if isinstance(item, (dict, list)):
+                lines.extend(json_to_text_lines(item, current_key))
+            else:
+                lines.append(f"{current_key}: {item}")
+    
+    else:
+        # Primitive value
+        key_label = prefix if prefix else "value"
+        lines.append(f"{key_label}: {data}")
+    
+    return lines
+
 # Works for txt, html, pdf, json
 def chunk_file(filepath, ext):
     """
@@ -96,51 +141,6 @@ def chunk_file(filepath, ext):
     if chunk.strip():
         chunks.append(chunk.strip())
     return chunks
-
-def json_to_text_lines(data, prefix=""):
-    """
-    Converts JSON data structure into a list of readable text lines.
-    
-    Handles nested dictionaries, lists, and various data types in a way that
-    preserves semantic meaning for embedding and retrieval.
-    
-    Args:
-        data: The JSON data (dict, list, or primitive type)
-        prefix (str): Prefix for nested structures (used recursively)
-    
-    Returns:
-        list: A list of text lines representing the JSON data
-    """
-    lines = []
-    
-    if isinstance(data, dict):
-        for key, value in data.items():
-            current_key = f"{prefix}.{key}" if prefix else key
-            
-            if isinstance(value, (dict, list)):
-                # For nested structures, add a header line and recurse
-                lines.append(f"{current_key}:")
-                lines.extend(json_to_text_lines(value, current_key))
-            else:
-                # For primitive values, create a readable line with proper formatting
-                formatted_value = str(value)
-                lines.append(f"{current_key}: {formatted_value}")
-    
-    elif isinstance(data, list):
-        for i, item in enumerate(data):
-            current_key = f"{prefix}[{i}]" if prefix else f"[{i}]"
-            
-            if isinstance(item, (dict, list)):
-                lines.extend(json_to_text_lines(item, current_key))
-            else:
-                lines.append(f"{current_key}: {item}")
-    
-    else:
-        # Primitive value
-        key_label = prefix if prefix else "value"
-        lines.append(f"{key_label}: {data}")
-    
-    return lines
 
 def ingest_corpus(dir, collection, force_reingest=False):
     """
@@ -506,12 +506,12 @@ if __name__ == "__main__":
     project_root = os.path.dirname(script_dir)
     
     # Path to financial analysis texts
-    financial_texts_dir = os.path.join(project_root, "data", "FinAnalysisTexts")
+    financial_texts_dir = os.path.join(project_root, "data")
     
     # Check if directory exists
     if not os.path.isdir(financial_texts_dir):
         print(f"Error: Directory not found: {financial_texts_dir}")
-        print("Please ensure the 'data/FinAnalysisTexts' directory exists.")
+        print("Please ensure the 'data' directory exists.")
         exit(1)
 
     print("=" * 60)
