@@ -192,8 +192,18 @@ async def start_chat():
         content=(
             "### Welcome to Financial Analysis\n\n"
             "I'm your AI financial analyst powered by:\n"
-            "- **RAG (Retrieval-Augmented Generation)** from the following financial analysis textbooks:\n"
-
+            "- **RAG (Retrieval-Augmented Generation)** and includes the following financial analysis textbooks:\n"
+            "  - Bodie, Zvi, et al. Investments. McGraw Hill, 2025. \n"
+            "  - Cochrane, John H. *Asset Pricing Revised Edition*. Princeton University Press.\n"
+            "  - Copeland, Thomas E., et al. Financial Theory and Corporate Policy. Pearson, 2014. \n"
+            "  - Damodaran, Aswath. Investment Valuation: Tools and Techniques for Determining the Value of Any Asset. Wiley, 2025. \n"
+            "  - Duffie, Darrell. *Dynamic Asset Pricing Theory*. Princeton University Press, 2010.\n"
+            "  - Graham, Benjamin, and David L. Dodd. Security Analysis. Echo Point Books & Media, LLC, 2024.\n"
+            "  - Hull, John. Options, Futures, and Other Derivatives, Ebook Global Edition. Pearson Education, Limited, 2021. \n"
+            "  - LeRoy, Stephen F., and Jan Werner. Principles of Financial Economics Stephen F. Leroy, Jan Werner. Cambridge University Press, 2018. \n"
+            "  - Martellini, Lionel, et al. Fixed-Income Securities: Valuation, Risk Management, and Portfolio Strategies. Wiley, 2012. \n"
+            "  - Palepu, Krishna G., et al. *Business Analysis and Valuation*. Cengage Learning, 2022.\n"
+            
             "- **Real-time stock data** from Yahoo Finance\n"
             "- **Comprehensive analysis reports**\n\n"
             
